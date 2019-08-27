@@ -1,3 +1,6 @@
+
+import javax.swing.JOptionPane;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -15,6 +18,13 @@ public class user_registration extends javax.swing.JFrame {
      */
     public user_registration() {
         initComponents();
+    }
+    
+    public void clear_reg_txtfld(){
+        fntf.setText(null);
+        lntf.setText(null);
+        untf.setText(null);
+        pwpf.setText(null);
     }
 
     /**
@@ -150,7 +160,11 @@ public class user_registration extends javax.swing.JFrame {
         String pw = new String(pwpf.getPassword());
         
         registration reg = new registration();
-        reg.register(fn, ln, un, pw);
+        int x = reg.register(fn, ln, un, pw);
+        if(x==1){
+            JOptionPane.showMessageDialog(registration_frame, "Successfully Registered");
+            this.clear_reg_txtfld();
+        }
     }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
