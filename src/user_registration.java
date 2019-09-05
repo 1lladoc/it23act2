@@ -294,7 +294,7 @@ public class user_registration extends javax.swing.JFrame {
         }else{
             //System.out.println("Welcome "+logObj.id);
             this.setVisible(false);
-            JFrame mainpage = new mainpage(logObj.id);
+            JFrame mainpage = new mainpage(logObj.fn);
             mainpage.setVisible(true);
         }
     }//GEN-LAST:event_jButton3ActionPerformed

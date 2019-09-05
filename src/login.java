@@ -18,11 +18,8 @@ import java.util.logging.Logger;
  * @author uxer
  */
 public class login {
-    
-    String id;
-    String un;
+   
     String fn;
-    String ln;
     
     conn con = new conn();
        
@@ -42,10 +39,7 @@ public class login {
             
             if(rs.next()){
                 x = 1;
-                id = rs.getString("id");
-                un = rs.getString("username");
                 fn = rs.getString("firstname");
-                ln = rs.getString("lastname");
                 //System.out.println(rs.getString("id"));
                 //this.setValues(id, username, username, username);
             }else{
