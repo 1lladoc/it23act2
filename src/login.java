@@ -19,9 +19,13 @@ import java.util.logging.Logger;
  */
 public class login {
     
-    conn con = new conn();
-    session sess = new session();
+    String id;
+    String un;
+    String fn;
+    String ln;
     
+    conn con = new conn();
+       
     public int login(String username, String password){
         int x = 0;
         try{
@@ -38,10 +42,12 @@ public class login {
             
             if(rs.next()){
                 x = 1;
-                sess.id = rs.getString("id");
-                sess.username = rs.getString("username");
-                sess.firstname = rs.getString("firstname");
-                sess.lastname = rs.getString("lastname");
+                id = rs.getString("id");
+                un = rs.getString("username");
+                fn = rs.getString("firstname");
+                ln = rs.getString("lastname");
+                //System.out.println(rs.getString("id"));
+                //this.setValues(id, username, username, username);
             }else{
                 x = 0;
             }

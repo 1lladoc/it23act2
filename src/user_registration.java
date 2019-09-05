@@ -1,5 +1,3 @@
-
-import java.awt.Color;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
@@ -23,7 +21,6 @@ public class user_registration extends javax.swing.JFrame {
     }
     
     registration reg = new registration();
-    session sess = new session();
     
     public void clear_reg_txtfld(){
         fntf.setText(null);
@@ -295,9 +292,9 @@ public class user_registration extends javax.swing.JFrame {
         if(x==0){
             JOptionPane.showMessageDialog(rootPane, "Invalid Username or Password", "ERROR", JOptionPane.ERROR_MESSAGE);
         }else{
-            //System.out.println("Welcome "+sess.firstname);
+            //System.out.println("Welcome "+logObj.id);
             this.setVisible(false);
-            JFrame mainpage = new mainpage();
+            JFrame mainpage = new mainpage(logObj.id);
             mainpage.setVisible(true);
         }
     }//GEN-LAST:event_jButton3ActionPerformed

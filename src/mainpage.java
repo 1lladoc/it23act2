@@ -16,6 +16,10 @@ public class mainpage extends javax.swing.JFrame {
     public mainpage() {
         initComponents();
     }
+    public mainpage(String id){
+        initComponents();
+        jLabel1.setText("Welcome "+id);
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
