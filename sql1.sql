@@ -1,5 +1,5 @@
 -- --------------------------------------------------------
--- Host:                         127.0.0.1
+-- Host:                         localhost
 -- Server version:               10.3.16-MariaDB - mariadb.org binary distribution
 -- Server OS:                    Win64
 -- HeidiSQL Version:             10.2.0.5599
@@ -16,6 +16,17 @@
 CREATE DATABASE IF NOT EXISTS `it23` /*!40100 DEFAULT CHARACTER SET latin1 */;
 USE `it23`;
 
+-- Dumping structure for table it23.products
+CREATE TABLE IF NOT EXISTS `products` (
+  `id` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT,
+  `product_name` text NOT NULL,
+  `quantity` int(3) NOT NULL DEFAULT 0,
+  `price` float NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- Data exporting was unselected.
+
 -- Dumping structure for table it23.users
 CREATE TABLE IF NOT EXISTS `users` (
   `id` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT,
@@ -25,7 +36,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `firstname` text NOT NULL,
   `type` int(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=latin1;
 
 -- Data exporting was unselected.
 
