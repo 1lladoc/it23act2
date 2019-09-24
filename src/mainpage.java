@@ -1,3 +1,6 @@
+
+import javax.swing.JOptionPane;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -23,6 +26,13 @@ public class mainpage extends javax.swing.JFrame {
     }
     
     product pobj = new product();
+    
+    void clearAddProductFields(){
+        pname.setText(null);
+        pqty.setValue(0);
+        pprice.setText(null);
+        pname.requestFocus();
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -154,17 +164,22 @@ public class mainpage extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        this.setVisible(false);
         addproductframe.setVisible(true);
+        addproductframe.setAlwaysOnTop(true);
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
         String pn = pname.getText();
         int qty = (int) pqty.getValue();
-        Object p = pprice.getValue();
+        //Object p = pprice.getValue();
+        float p = Float.parseFloat(pprice.getValue().toString());
         
-        pobj.addProduct(pn, qty, p);
+        int r = pobj.addProduct(pn, qty, p);
+        if(r==1){
+            JOptionPane.showMessageDialog(addproductframe, "New Product Added Successfully");
+            clearAddProductFields();
+        }
     }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
