@@ -1,5 +1,13 @@
 
+import com.mysql.jdbc.Connection;
+import com.mysql.jdbc.Statement;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import java.sql.ResultSet;
+import javax.swing.table.DefaultTableModel;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -18,14 +26,17 @@ public class mainpage extends javax.swing.JFrame {
      */
     public mainpage() {
         initComponents();
+        refresh();
     }
     
     public mainpage(String fn) {
         initComponents();
         jLabel1.setText("Welcome "+fn);
+        refresh();
     }
     
     product pobj = new product();
+    conn con = new conn();
     
     void clearAddProductFields(){
         pname.setText(null);
@@ -34,6 +45,28 @@ public class mainpage extends javax.swing.JFrame {
         pname.requestFocus();
     }
 
+    final void refresh(){
+        try{
+            Class.forName("com.mysql.jdbc.Driver");
+            Connection conn = (Connection) DriverManager.getConnection(con.url, con.username, con.password);
+            
+            String sql = "select * from products;";
+            Statement stmt = (Statement) conn.createStatement();
+            
+            ResultSet rs = stmt.executeQuery(sql);
+            DefaultTableModel model = (DefaultTableModel) ptable.getModel();
+            model.setRowCount(0);
+            while(rs.next()){
+                model.addRow(new Object[]{rs.getString("id"),rs.getString("product_name"),rs.getString("quantity"),rs.getString("price")});
+            }
+            
+            
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(mainpage.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(mainpage.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -54,7 +87,10 @@ public class mainpage extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        ptable = new javax.swing.JTable();
+        jButton3 = new javax.swing.JButton();
+
+        addproductframe.setMinimumSize(new java.awt.Dimension(403, 300));
 
         jLabel2.setText("Product Name:");
 
@@ -124,7 +160,7 @@ public class mainpage extends javax.swing.JFrame {
             }
         });
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        ptable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -132,7 +168,14 @@ public class mainpage extends javax.swing.JFrame {
                 "id", "product", "qty", "price"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(ptable);
+
+        jButton3.setText("Delete");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -142,10 +185,11 @@ public class mainpage extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 97, Short.MAX_VALUE))
+                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 97, Short.MAX_VALUE)
+                    .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 375, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 462, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -154,9 +198,13 @@ public class mainpage extends javax.swing.JFrame {
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton1)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jButton1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton3)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 372, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         pack();
@@ -165,6 +213,7 @@ public class mainpage extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
         addproductframe.setVisible(true);
+        addproductframe.setLocationRelativeTo(this);
         addproductframe.setAlwaysOnTop(true);
     }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -179,8 +228,32 @@ public class mainpage extends javax.swing.JFrame {
         if(r==1){
             JOptionPane.showMessageDialog(addproductframe, "New Product Added Successfully");
             clearAddProductFields();
+            refresh();
         }
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        // TODO add your handling code here:
+        int r = ptable.getSelectedRow();
+        if(r == -1){
+            JOptionPane.showMessageDialog(rootPane, "Please Select a product","Warning",JOptionPane.WARNING_MESSAGE);
+        }else{
+            Object id = ptable.getValueAt(r, 0);
+            Object pn = ptable.getValueAt(r, 1);
+            int c = JOptionPane.showConfirmDialog(rootPane, "This will delete "+pn+"\nClick OK to continue","Confirm Delete",JOptionPane.OK_CANCEL_OPTION);
+            if(c == JOptionPane.OK_OPTION){
+                int cc = JOptionPane.showConfirmDialog(rootPane, "Are you sure you want to delete "+pn+"?", "Delete", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+                if(cc == JOptionPane.YES_OPTION){
+                    int re = pobj.deleteProduct(id);
+                    if(re == 1){
+                        JOptionPane.showMessageDialog(rootPane, "Product "+pn+" deleted");
+                        refresh();
+                    }
+                }
+            }
+        }
+        
+    }//GEN-LAST:event_jButton3ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -221,14 +294,15 @@ public class mainpage extends javax.swing.JFrame {
     private javax.swing.JFrame addproductframe;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
     private javax.swing.JTextField pname;
     private javax.swing.JFormattedTextField pprice;
     private javax.swing.JSpinner pqty;
+    private javax.swing.JTable ptable;
     // End of variables declaration//GEN-END:variables
 }
