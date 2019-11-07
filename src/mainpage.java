@@ -27,13 +27,13 @@ public class mainpage extends javax.swing.JFrame {
      */
     public mainpage() {
         initComponents();
-        refresh();
+        refreshThread.start();
     }
     
     public mainpage(String fn) {
         initComponents();
         jLabel1.setText("Welcome "+fn);
-        refresh();
+        refreshThread.start();
     }
     
     product pobj = new product();
@@ -78,6 +78,22 @@ public class mainpage extends javax.swing.JFrame {
             Logger.getLogger(mainpage.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    
+    Thread refreshThread = new Thread(new Runnable(){
+    
+        @Override
+        public void run(){
+            try{
+                while(true){
+                    refresh();
+                    Thread.sleep(1000);
+                }
+            } catch (InterruptedException ex) {
+                Logger.getLogger(mainpage.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        
+    });
     
     final void search(String keyword){
         try{
@@ -204,10 +220,11 @@ public class mainpage extends javax.swing.JFrame {
                     .addComponent(jLabel2)
                     .addComponent(pname, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(addproductframeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(pqty, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(xst_qty, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(addproductframeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(xst_qty, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(addproductframeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel3)
+                        .addComponent(pqty, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(addproductframeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
