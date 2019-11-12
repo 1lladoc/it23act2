@@ -38,7 +38,6 @@ public class mainpage extends javax.swing.JFrame {
     
     product pobj = new product();
     conn con = new conn();
-    
     Object id = null;
     
     void clearAddProductFields(){
@@ -55,29 +54,6 @@ public class mainpage extends javax.swing.JFrame {
         pprice.setEnabled(true);
         this.clearAddProductFields();
     }
-
-    final void refresh(){
-        try{
-            Class.forName("com.mysql.jdbc.Driver");
-            Connection conn = (Connection) DriverManager.getConnection(con.url, con.username, con.password);
-            
-            String sql = "select * from products;";
-            Statement stmt = (Statement) conn.createStatement();
-            
-            ResultSet rs = stmt.executeQuery(sql);
-            DefaultTableModel model = (DefaultTableModel) ptable.getModel();
-            model.setRowCount(0);
-            while(rs.next()){
-                model.addRow(new Object[]{rs.getString("id"),rs.getString("product_name"),rs.getString("quantity"),rs.getString("price")});
-            }
-            
-            
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(mainpage.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (SQLException ex) {
-            Logger.getLogger(mainpage.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
     
     Thread refreshThread = new Thread(new Runnable(){
     
@@ -85,7 +61,7 @@ public class mainpage extends javax.swing.JFrame {
         public void run(){
             try{
                 while(true){
-                    refresh();
+                    pobj.refresh(ptable);
                     Thread.sleep(1000);
                 }
             } catch (InterruptedException ex) {
@@ -94,32 +70,6 @@ public class mainpage extends javax.swing.JFrame {
         }
         
     });
-    
-    final void search(String keyword){
-        try{
-            Class.forName("com.mysql.jdbc.Driver");
-            Connection conn = (Connection) DriverManager.getConnection(con.url, con.username, con.password);
-            
-            String sql = "SELECT * FROM products WHERE id LIKE ? OR product_name LIKE ?;";
-            PreparedStatement pstmt = (PreparedStatement) conn.prepareStatement(sql);
-            
-            pstmt.setString(1, "%"+keyword+"%");
-            pstmt.setString(2, "%"+keyword+"%");
-            
-            ResultSet rs = pstmt.executeQuery();
-            DefaultTableModel model = (DefaultTableModel) ptable.getModel();
-            model.setRowCount(0);
-            while(rs.next()){
-                model.addRow(new Object[]{rs.getString("id"),rs.getString("product_name"),rs.getString("quantity"),rs.getString("price")});
-            }
-            
-            
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(mainpage.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (SQLException ex) {
-            Logger.getLogger(mainpage.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
     
     /**
      * This method is called from within the constructor to initialize the form.
@@ -363,7 +313,7 @@ public class mainpage extends javax.swing.JFrame {
         if(r==1){
             JOptionPane.showMessageDialog(addproductframe, "New Product Added Successfully");
             clearAddProductFields();
-            refresh();
+            pobj.refresh(ptable);
         }
     }//GEN-LAST:event_add_btnActionPerformed
 
@@ -382,7 +332,7 @@ public class mainpage extends javax.swing.JFrame {
                     int re = pobj.deleteProduct(id);
                     if(re == 1){
                         JOptionPane.showMessageDialog(rootPane, "Product "+pn+" deleted");
-                        refresh();
+                        pobj.refresh(ptable);
                     }
                 }
             }
@@ -429,7 +379,7 @@ public class mainpage extends javax.swing.JFrame {
         if(r==1){
             JOptionPane.showMessageDialog(addproductframe, "Product Edited");
             addproductframe.setVisible(false);
-            this.refresh();
+            pobj.refresh(ptable);
         }else{
             JOptionPane.showMessageDialog(rootPane, "Problem Editing product","Error",JOptionPane.ERROR_MESSAGE);
         }
@@ -439,13 +389,13 @@ public class mainpage extends javax.swing.JFrame {
     private void search_btnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_search_btnActionPerformed
         // TODO add your handling code here:
         String keyword = keyword_tf.getText();
-        this.search(keyword);
+        pobj.search(keyword, ptable);
     }//GEN-LAST:event_search_btnActionPerformed
 
     private void keyword_tfKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_keyword_tfKeyReleased
         // TODO add your handling code here:\
         String keyword = keyword_tf.getText();
-        this.search(keyword);
+        pobj.search(keyword, ptable);
     }//GEN-LAST:event_keyword_tfKeyReleased
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
@@ -490,7 +440,7 @@ public class mainpage extends javax.swing.JFrame {
             if(r==1){
                 JOptionPane.showMessageDialog(addproductframe, "Product Quantity Updated!");
                 addproductframe.setVisible(false);
-                this.refresh();
+                pobj.refresh(ptable);
             }
         }
     }//GEN-LAST:event_addqty_btnActionPerformed
