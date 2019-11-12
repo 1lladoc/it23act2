@@ -2,6 +2,7 @@
 import com.mysql.jdbc.Connection;
 import com.mysql.jdbc.PreparedStatement;
 import com.mysql.jdbc.Statement;
+import java.awt.AWTException;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.logging.Level;
@@ -28,12 +29,14 @@ public class mainpage extends javax.swing.JFrame {
     public mainpage() {
         initComponents();
         refreshThread.start();
+        checkQuantity.start();
     }
     
     public mainpage(String fn) {
         initComponents();
         jLabel1.setText("Welcome "+fn);
         refreshThread.start();
+        checkQuantity.start();
     }
     
     product pobj = new product();
@@ -62,7 +65,7 @@ public class mainpage extends javax.swing.JFrame {
             try{
                 while(true){
                     pobj.refresh(ptable);
-                    Thread.sleep(1000);
+                    Thread.sleep(5000);
                 }
             } catch (InterruptedException ex) {
                 Logger.getLogger(mainpage.class.getName()).log(Level.SEVERE, null, ex);
@@ -71,6 +74,22 @@ public class mainpage extends javax.swing.JFrame {
         
     });
     
+    Thread checkQuantity = new Thread(new Runnable(){
+        
+        Notification n = new Notification();
+        @Override
+        public void run(){
+            try{
+                while(true){
+                    n.checkQuantity();
+                    Thread.sleep(5000);
+                }
+            } catch (InterruptedException ex) {
+                Logger.getLogger(mainpage.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        
+    });
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
